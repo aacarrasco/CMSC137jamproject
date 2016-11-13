@@ -30,9 +30,7 @@ public class ChatServerListener implements Runnable {
       
         // Broadcast each message sent by each client in the inputStream to each other clients on the client list.
         for(ChatServerListener listener: clientList){
-          if(listener != this){
-            listener.outputStream.writeUTF(message);
-          }
+          listener.outputStream.writeUTF(message);
         }
 
       }

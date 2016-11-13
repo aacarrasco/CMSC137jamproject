@@ -1,7 +1,6 @@
-package chat;
-
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class ChatServer extends Thread {
   private ServerSocket serverSocket;

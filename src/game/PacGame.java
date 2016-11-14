@@ -18,10 +18,13 @@ import org.newdawn.slick.command.InputProviderListener;
 import org.newdawn.slick.command.KeyControl;
 import org.newdawn.slick.geom.Circle;
 
+import chat.ChatClient;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class PacGame extends BasicGame implements InputProviderListener, Runnable{
 	DatagramSocket socket;
@@ -142,8 +145,10 @@ public class PacGame extends BasicGame implements InputProviderListener, Runnabl
 		}
 	};
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws UnknownHostException, IOException{
 		try{
+			new ChatClient();
+			
 			AppGameContainer appgc;
 			appgc = new AppGameContainer(new PacGame("Pac Ganern"));
 			appgc.setDisplayMode(640, 480, false);

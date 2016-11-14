@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
-public class GameServer implements Runnable{
+import chat.ChatServer;
+import framework.Constants;
+
+public class GameServer implements Runnable, Constants{
 	
 	DatagramSocket serverSocket = null;
 	Thread t;
@@ -19,7 +20,7 @@ public class GameServer implements Runnable{
 
 	public GameServer(){
 		try {
-            serverSocket = new DatagramSocket(1337);
+            serverSocket = new DatagramSocket(GAME_PORT);
 			serverSocket.setSoTimeout(100);
 		} catch (IOException e) {
 		} catch(Exception e){}
@@ -127,8 +128,9 @@ public class GameServer implements Runnable{
 		}
 	}	
 	
-	public static void main(String args[]){
+	public static void main(String args[]) throws IOException{
 		new GameServer();
+		new ChatServer();
 		
 	}
 }

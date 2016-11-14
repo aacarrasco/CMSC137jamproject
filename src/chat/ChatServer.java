@@ -1,14 +1,20 @@
 package chat;
 
-import java.net.*;
-import java.io.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-public class ChatServer extends Thread {
+import framework.Constants;
+
+public class ChatServer implements Runnable, Constants {
   private ServerSocket serverSocket;
 
-  public ChatServer(int port) throws IOException {
-    serverSocket = new ServerSocket(port);
-  }
+  public ChatServer() throws IOException {
+		
+		serverSocket = new ServerSocket(PORT);
+		Thread t = new Thread(this);
+		t.start();
+	}
 
   public void run() {
     while(true) { // continuously waits for clients to connect
@@ -33,7 +39,7 @@ public class ChatServer extends Thread {
     } 
   }
 
-  public static void main(String [] args) { 
+  /*public static void main(String [] args) { 
     try {
        int port = Integer.parseInt(args[0]);
        Thread t = new ChatServer(port);
@@ -43,6 +49,6 @@ public class ChatServer extends Thread {
     } catch(ArrayIndexOutOfBoundsException e) {
        System.out.println("Usage: java ChatServer <port no.> ");
     }
-  }
+  }*/
 }
 

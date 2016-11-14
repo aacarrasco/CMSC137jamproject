@@ -1,4 +1,4 @@
-package pac;
+package game;
 
 import java.net.InetAddress;
 

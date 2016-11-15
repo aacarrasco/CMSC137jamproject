@@ -1,39 +1,45 @@
 package chat;
 
-import java.net.*;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-public class ChatClient implements Runnable {
+import framework.Constants;
+import window.ChatWindow;
+
+public class ChatClient implements Runnable, Constants {
    
   Socket client;
   String name;
   Thread inThread;
   ChatWindow chatWindow;
+  int port;
   
-  public ChatClient(String name, String serverName, int port){
-    
-    try{
-    
-      this.name = name;
-      this.client = new Socket(serverName, port);
-      
-      System.out.println(this.name + " is connecting to " + serverName + " on port " + port);
-      System.out.println("Just connected to " + this.client.getRemoteSocketAddress());
+  public ChatClient() throws UnknownHostException, IOException{
+		//this.client = new Socket(SERVER_NAME, PORT);
+		this.chatWindow = new ChatWindow(this.client);
+		this.client = this.chatWindow.getClient();
+			
+		this.name = this.chatWindow.getName();
+		this.port = PORT;
+		
+		System.out.println(this.name + " is connecting to " + SERVER_NAME + " on port " + this.port);
+		System.out.println("Just connected to " + this.client.getRemoteSocketAddress());
 
-      OutputStream outToServer = client.getOutputStream();
-      DataOutputStream out = new DataOutputStream(outToServer);
-      out.writeUTF(name + " has joined the conversation.");
+		OutputStream outToServer = this.client.getOutputStream();
+		DataOutputStream out = new DataOutputStream(outToServer);
+		out.writeUTF(this.name + " has joined the conversation.");
 
-      initializeThreads();
-      
-      chatWindow = new ChatWindow(name, this.client);
-     
-    } catch(UnknownHostException e) {
-      System.out.println("Unknown Host.");
-    } catch(IOException e){
-      System.out.println("Cannot find Server");
-    } 
-  }
+		initializeThreads();
+		
+		Thread t = new Thread(this);
+		t.start();
+	}
+
 
   public void run(){
     
@@ -57,7 +63,7 @@ public class ChatClient implements Runnable {
     
           while(true){
             String message = in.readUTF();
-          	chatWindow.messageTextArea.append("\n" + message);  	
+          	chatWindow.getMessageTextArea().append("\n" + message);  	
           }
     
         } catch(Exception e){
@@ -71,7 +77,7 @@ public class ChatClient implements Runnable {
   }
       
 
-  public static void main(String [] args) {
+ /* public static void main(String [] args) {
 
     try {
     
@@ -90,5 +96,5 @@ public class ChatClient implements Runnable {
       System.out.println("Usage: java ChatClient <server ip> <port no.> <name>");
     }
 
-  }
+  }*/
 }

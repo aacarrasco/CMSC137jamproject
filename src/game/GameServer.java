@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -33,8 +34,14 @@ public class GameServer implements Runnable, Constants{
 		updater = new Thread(){
 			public void run(){
 				while(true){
-					for(Iterator ite = players.keySet().iterator();ite.hasNext();){
-						int port = (int) ite.next();
+					ArrayList<Integer> keys = new ArrayList<Integer>();
+					
+					for(Iterator<Integer> ite = players.keySet().iterator();ite.hasNext();){
+						keys.add(ite.next());
+					}
+					
+					for(int i=0; i<keys.size(); i+=1){
+						int port = keys.get(i);
 						switch(players.get(port).getDirection()){
 							case "[Command=UP]":
 								players.get(port).setY(players.get(port).getY() - 5);
@@ -50,12 +57,14 @@ public class GameServer implements Runnable, Constants{
 								break;
 						}
 						
-						try {
-							Thread.sleep(300);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
 					}
+						
+					try {
+						Thread.sleep(300);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
 					broadcast(players);
 				}
 			}
@@ -79,10 +88,7 @@ public class GameServer implements Runnable, Constants{
 	
 	public void broadcast(HashMap players){
 		String message;
-
-		//TO FIX
-		System.out.println("ad");
-			
+	
 		for(Iterator ite = players.keySet().iterator(); ite.hasNext();){
 			int port = (int) ite.next();
 			message = toString(players);

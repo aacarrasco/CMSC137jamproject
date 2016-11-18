@@ -62,6 +62,10 @@ public class ChatWindow extends JFrame implements ActionListener, Constants{
 		return this.client;
 	}
 	
+	public String getClientAddress(){
+		return this.clientAddress;
+	}
+	
 	public void setChatPanel(){
 		getMessageTextArea().setLineWrap(true);
 		getMessageTextArea().setEditable(false);

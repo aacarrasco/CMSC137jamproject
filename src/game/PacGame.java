@@ -42,8 +42,10 @@ public class PacGame extends BasicGame implements InputProviderListener, Runnabl
 	String message = "";
 	String serverData;
 	
-	public PacGame(String gamename){
+	public PacGame(String gamename, String address){
 		super(gamename);
+		this.server = address;
+		
 	}
 	
 	public void init(GameContainer gc) throws SlickException {
@@ -147,10 +149,10 @@ public class PacGame extends BasicGame implements InputProviderListener, Runnabl
 	
 	public static void main(String[] args) throws UnknownHostException, IOException{
 		try{
-			new ChatClient();
+			ChatClient chatClient = new ChatClient();
 			
 			AppGameContainer appgc;
-			appgc = new AppGameContainer(new PacGame("Pac Ganern"));
+			appgc = new AppGameContainer(new PacGame("Pac Ganern", chatClient.getClientAddress()));
 			appgc.setDisplayMode(640, 480, false);
 			appgc.start();
 			

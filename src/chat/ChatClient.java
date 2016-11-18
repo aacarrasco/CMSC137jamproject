@@ -17,7 +17,8 @@ public class ChatClient implements Runnable, Constants {
   String name;
   Thread inThread;
   ChatWindow chatWindow;
-  int port;
+  private int port;
+  private String address;
   
   public ChatClient() throws UnknownHostException, IOException{
 		//this.client = new Socket(SERVER_NAME, PORT);
@@ -25,6 +26,7 @@ public class ChatClient implements Runnable, Constants {
 		this.client = this.chatWindow.getClient();
 			
 		this.name = this.chatWindow.getName();
+		this.setClientAddress(this.chatWindow.getClientAddress());
 		this.port = PORT;
 		
 		System.out.println(this.name + " is connecting to " + SERVER_NAME + " on port " + this.port);
@@ -75,6 +77,22 @@ public class ChatClient implements Runnable, Constants {
     };
   
   }
+
+
+/**
+ * @return the address
+ */
+public String getClientAddress() {
+	return address;
+}
+
+
+/**
+ * @param address the address to set
+ */
+public void setClientAddress(String address) {
+	this.address = address;
+}
       
 
  /* public static void main(String [] args) {

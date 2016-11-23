@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" nextobjectid="6">
+ <tileset firstgid="1" name="Simple" tilewidth="32" tileheight="32" tilecount="40" columns="8">
+  <image source="../png/simpleGraphics_tiles32x32.png" width="256" height="160"/>
+ </tileset>
+ <tileset firstgid="41" name="dungeonIcons" tilewidth="32" tileheight="32" tilecount="3072" columns="64">
+  <image source="../png/DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
+ </tileset>
+ <layer name="BG" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3DMQ0AAAwDoB4TVv+qKmSQ0EuqqqrquwM/f0CzEA4AAA==
+  </data>
+ </layer>
+ <layer name="Tile Layer 1" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2UQQ4AEAwEfcHF/5/qLpradKubMIkDIcNSrb1JB1t0nYo3C3Uvmt/pfZzuh4Wad2WQmprXmhdF1Yus8zLdnYex3wyvlT8L9L1VeVl1ZJHtVfsnVbxeblY/mnOV1wOts+/dj1fV7y3vK0xFEWMkEA4AAA==
+  </data>
+ </layer>
+ <layer name="Spawn3" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAXEgBvMEDxS7B0Fo4AY0MECwSPF3lEAAaSGPy711DKH1vaOgpEJRsu3UTAKRgGt2+G4zKe3vQDgSvGlEA4AAA==
+  </data>
+ </layer>
+ <layer name="Spawn4" width="30" height="30" visible="0">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAUjCdxghmB6mzdQ9o4C2oIOFggeKfaOAgggNfxxqaeWObS2dxSMTDBavo2CUTAKaN3exGU+ve0FAHlwZ8gQDgAA
+  </data>
+ </layer>
+</map>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="dungeonIcons" tilewidth="32" tileheight="32" tilecount="3072" columns="64">
+  <image source="../png/DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
+ </tileset>
+ <tileset firstgid="3073" name="Simple" tilewidth="32" tileheight="32" tilecount="40" columns="8">
+  <image source="../png/simpleGraphics_tiles32x32.png" width="256" height="160"/>
+ </tileset>
+ <layer name="BG" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3DMQ0AAAwDoB4TUf9KK2SQ0EuqqqrquwMrTjpAEA4AAA==
+  </data>
+ </layer>
+ <layer name="Walls" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC9WUQRKAIAwDeYAX//9ZD94chG1KI3aGgyPN1hBprV/ncS+11H4X97nv7Xm2qF50H62/c10+r67dudRX1ffRfCu+0dGjaESzGXnX06RzK9xsVXKj2RxxZ+dFZ9vFZzoT0VT/+Wiesz6Ts89WBTebOaJN7yIHV+3PZuZrblaz0gvXPeXg0nuLcCsztzq7Lu4FXBQDwhAOAAA=
+  </data>
+ </layer>
+ <layer name="Spawn5" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGNlgAzME09u8gbJ3FIyCgQQDlU5H88coGAWjYBSMgpECBntbdLROHnwAAJMz6CIQDgAA
+  </data>
+ </layer>
+ <layer name="Spawn6" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGNlgAzME09u8gbJ3FIyCUTAKRgHxgNyyldIyeaDsHQWjYBQMfTDY26Kj5dTgAwAJ1GsnEA4AAA==
+  </data>
+ </layer>
+ <layer name="PowerUp" width="30" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC2NgGAWjYPiCBBYIprd5A2XvYADkupVSPw6UvaNgFIyCUUBNMFBl0mhZODQAveMJZt9A2TsK6AMATcrCVRAOAAA=
+  </data>
+ </layer>
+</map>

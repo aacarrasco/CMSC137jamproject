@@ -53,4 +53,9 @@ public interface Constants {
 	public static final String localhost = "127.0.0.1";
 	public static final String MULTICAST_ADDRESS = "224.0.0.1";
 	
+	/*
+	 * UI
+	 * */
+	public static final int COLOR_COUNT = 2;
+	
 }

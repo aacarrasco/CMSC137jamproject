@@ -27,7 +27,7 @@ public class NetPlayer {
 	 * @param address
 	 * @param port
 	 */
-	public NetPlayer(String name,InetAddress address, int port){
+	public NetPlayer(String name,InetAddress address, int port, int playerNo){
 		this.setAddress(address);
 		this.setPort(port);
 		this.setName(name);
@@ -109,14 +109,15 @@ public class NetPlayer {
 	 */
 	public String toString(){
 		String retval="";
-		retval += "PLAYER ";
-		retval += name + " ";
-		retval += x + " ";
-		retval += y + " ";
-		retval += direction + " ";
-		retval += score + " ";
-		retval += poweredUp + " ";
-		retval += isAlive;
+		retval += "PLAYER ";			//playerInfo[0]
+		retval += playerNo + " ";		//playerInfo[1]
+		retval += name + " ";			//playerInfo[2]
+		retval += x + " ";				//playerInfo[3]
+		retval += y + " ";				//playerInfo[4]
+		retval += direction + " ";		//playerInfo[5]
+		retval += score + " ";			//playerInfo[6]
+		retval += poweredUp + " ";		//playerInfo[7]
+		retval += isAlive;				//playerInfo[8]
 		/*retval += isAlive + " ";
 		retval += address + " ";
 		retval += port;

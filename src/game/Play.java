@@ -74,9 +74,19 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	private ArrayList<Float> yPower;
 	//private ArrayList<Boolean> powerIsUp;
 	
-	private Animation movingUp, movingDown, movingRight, movingLeft;
+	// Animations
 	private int[] normalDuration 	= {150, 150, 150, 150};
 	//private int[] powerDuration		= {75, 75, 75, 75};	
+	
+	private Animation[] movingUp = new Animation[COLOR_COUNT];
+	private Animation[] movingDown = new Animation[COLOR_COUNT];
+	private Animation[] movingRight = new Animation[COLOR_COUNT];
+	private Animation[] movingLeft = new Animation[COLOR_COUNT];
+	
+	private Animation[] movingUpPower = new Animation[COLOR_COUNT];
+	private Animation[] movingDownPower = new Animation[COLOR_COUNT];
+	private Animation[] movingRightPower = new Animation[COLOR_COUNT];
+	private Animation[] movingLeftPower = new Animation[COLOR_COUNT];
 	
 	private Command moveUP = new BasicCommand("UP");
 	private Command moveDOWN = new BasicCommand("DOWN");
@@ -165,7 +175,8 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 					}
 					// Gets the position of all players in the game.
 					if(serverData.startsWith("PLAYER")){
-						message = serverData.substring(6);
+						//message = serverData.substring(6);
+						message = serverData;
 					}
 					// Spawns the food and powerups
 					if(serverData.startsWith("SPAWN")){
@@ -207,26 +218,73 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		chat.setMessagesTF(messagesTF);
 		
 		// Animate players here
-		Image[] up 		= {new Image("assets/sprites/bluePak/blueOpenU.png"), new Image("assets/sprites/bluePak/blueSemiU.png"), new Image("assets/sprites/bluePak/blueCloseU.png"), new Image("assets/sprites/bluePak/blueSemiU.png")};
-		Image[] down 	= {new Image("assets/sprites/bluePak/blueOpenD.png"), new Image("assets/sprites/bluePak/blueSemiD.png"), new Image("assets/sprites/bluePak/blueCloseD.png"), new Image("assets/sprites/bluePak/blueSemiD.png")};
-		Image[] left	= {new Image("assets/sprites/bluePak/blueOpenL.png"), new Image("assets/sprites/bluePak/blueSemiL.png"), new Image("assets/sprites/bluePak/blueCloseL.png"), new Image("assets/sprites/bluePak/blueSemiL.png")};
-		Image[] right 	= {new Image("assets/sprites/bluePak/blueOpenR.png"), new Image("assets/sprites/bluePak/blueSemiR.png"), new Image("assets/sprites/bluePak/blueCloseR.png"), new Image("assets/sprites/bluePak/blueSemiR.png")};
+		Image[][] up = new Image[COLOR_COUNT][4];
+		Image[][] down = new Image[COLOR_COUNT][4];
+		Image[][] left = new Image[COLOR_COUNT][4];
+		Image[][] right = new Image[COLOR_COUNT][4];
 		
-		movingUp 		= new Animation(up		, normalDuration	, true);
-		movingDown		= new Animation(down	, normalDuration	, true);
-		movingLeft		= new Animation(left	, normalDuration	, true);
-		movingRight		= new Animation(right	, normalDuration	, true);
+		Image[][] upPower = new Image[COLOR_COUNT][4];
+		Image[][] downPower = new Image[COLOR_COUNT][4];
+		Image[][] leftPower = new Image[COLOR_COUNT][4];
+		Image[][] rightPower = new Image[COLOR_COUNT][4];
 		
-		movingUp.start();
-		movingDown.start();
-		movingLeft.start();
-		movingRight.start();
-
-		movingUp.setLooping(true);
-		movingDown.setLooping(true);
-		movingRight.setLooping(true);
-		movingLeft.setLooping(true);
+		for(int i=0; i<COLOR_COUNT; i++){
+			for(int j=0; j<4; j++){
+				String upPath = "assets/sprites/pakmen/U" + (i+1) + "-" + (j+1) + ".png";
+				String downPath = "assets/sprites/pakmen/D" + (i+1) + "-" + (j+1) + ".png";
+				String leftPath = "assets/sprites/pakmen/L" + (i+1) + "-" + (j+1) + ".png";
+				String rightPath = "assets/sprites/pakmen/R" + (i+1) + "-" + (j+1) + ".png";
+				
+				String upPowerPath = "assets/sprites/pakmen/PowerU" + (i+1) + "-" + (j+1) + ".png";
+				String downPowerPath = "assets/sprites/pakmen/PowerD" + (i+1) + "-" + (j+1) + ".png";
+				String leftPowerPath = "assets/sprites/pakmen/PowerL" + (i+1) + "-" + (j+1) + ".png";
+				String rightPowerPath = "assets/sprites/pakmen/PowerR" + (i+1) + "-" + (j+1) + ".png";
+				
+				up[i][j] = new Image(upPath);
+				down[i][j] = new Image(downPath);
+				left[i][j] = new Image(leftPath);
+				right[i][j] = new Image(rightPath);
+				
+				upPower[i][j] = new Image(upPowerPath);
+				downPower[i][j] = new Image(downPowerPath);
+				leftPower[i][j] = new Image(leftPowerPath);
+				rightPower[i][j] = new Image(rightPowerPath);
+			}
+		}
 		
+		for(int i=0; i<COLOR_COUNT; i++){
+			movingUp[i] = new Animation(up[i], normalDuration, true);
+			movingDown[i] = new Animation(down[i], normalDuration, true);
+			movingLeft[i] = new Animation(left[i], normalDuration, true);
+			movingRight[i] = new Animation(right[i], normalDuration, true);
+			
+			movingUp[i].start();
+			movingDown[i].start();
+			movingLeft[i].start();
+			movingRight[i].start();
+			
+			movingUp[i].setLooping(true);
+			movingDown[i].setLooping(true);
+			movingRight[i].setLooping(true);
+			movingLeft[i].setLooping(true);
+			
+			movingUpPower[i] = new Animation(upPower[i], normalDuration, true);
+			movingDownPower[i] = new Animation(downPower[i], normalDuration, true);
+			movingLeftPower[i] = new Animation(leftPower[i], normalDuration, true);
+			movingRightPower[i] = new Animation(rightPower[i], normalDuration, true);
+			
+			movingUpPower[i].start();
+			movingDownPower[i].start();
+			movingLeftPower[i].start();
+			movingRightPower[i].start();
+			
+			movingUpPower[i].setLooping(true);
+			movingDownPower[i].setLooping(true);
+			movingRightPower[i].setLooping(true);
+			movingLeftPower[i].setLooping(true);
+			
+		}
+				
 		players = new ArrayList<Animation>();
 		xPos 	= new ArrayList<Float>();
 		yPos	= new ArrayList<Float>();
@@ -308,28 +366,47 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 			String[] playersInfo = message.split(":");
 			for(int i=0; i<playersInfo.length; i++){
 				String[] playerInfo = playersInfo[i].split(" ");
-				String pname = playerInfo[1].trim();
-				//int x = Integer.parseInt(playerInfo[2]);
-				float x = Float.parseFloat(playerInfo[2]);
-				//int y = Integer.parseInt(playerInfo[3]);
-				float y = Float.parseFloat(playerInfo[3]);
-				String direction = playerInfo[4].trim();
-				boolean isAlive = Boolean.parseBoolean(playerInfo[5]);
+				int playerNo = Integer.parseInt(playerInfo[1]);
+				String pname = playerInfo[2].trim();
+				float x = Float.parseFloat(playerInfo[3]);
+				float y = Float.parseFloat(playerInfo[4]);
+				String direction = playerInfo[5].trim();
+				int score = Integer.parseInt(playerInfo[6]);
+				boolean powerUp = Boolean.parseBoolean(playerInfo[7]);
+				boolean isAlive = Boolean.parseBoolean(playerInfo[8]);
 				//System.out.println("Player " + pname + " at " + x + " : " + y + " : " + direction + " : " + isAlive);
-
-				switch(direction){
+				//int playerNo = Integer.parseInt(playerInfo[8]);
+				
+				if(isAlive && !powerUp){
+					switch(direction){
 					case "UP":
-						players.set(i, movingUp);
+						players.set(i, movingUp[playerNo]);
 						break;
 					case "DOWN":
-						players.set(i, movingDown);
+						players.set(i, movingDown[playerNo]);
 						break;
 					case "LEFT":
-						players.set(i, movingLeft);
+						players.set(i, movingLeft[playerNo]);
 						break;
 					case "RIGHT":
-						players.set(i, movingRight);
+						players.set(i, movingRight[playerNo]);
 						break;
+					}
+				} else if(isAlive && powerUp){
+					switch(direction){
+					case "UP":
+						players.set(i, movingUpPower[playerNo]);
+						break;
+					case "DOWN":
+						players.set(i, movingDownPower[playerNo]);
+						break;
+					case "LEFT":
+						players.set(i, movingLeftPower[playerNo]);
+						break;
+					case "RIGHT":
+						players.set(i, movingRightPower[playerNo]);
+						break;
+					}
 				}
 				
 				xPos.set(i, x * 8);
@@ -373,35 +450,8 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	@Override
 	public void controlPressed(Command command) {
 		try{
-			
 			String newDirection = ((BasicCommand) command).getName();
-			/*
-			prevX = currXPos; 
-			prevY = currYPos;
-			prevDirection = currDirection;
-			
-			// Changes position every time there is a command, change this to change position every time it changed direction
-			switch(newDirection){
-			case "UP":
-				currYPos -= Y_SPEED;
-				break;
-			case "DOWN":
-				currYPos += Y_SPEED;
-				break;
-			case "LEFT":
-				currXPos -= X_SPEED;
-				break;
-			case "RIGHT":
-				currXPos += X_SPEED;
-				break;
-			}
-			
-			currDirection = newDirection;
-			*/
-			//if(prevX != currXPos || prevY != currYPos){
-				//send("PLAYER " + name + " " + currXPos + " " + currYPos + " " + currDirection + " " + currIsAlive);
-				send("PLAYER " + name + " " + newDirection );
-			//}
+			send("PLAYER " + name + " " + newDirection );
 			
 		} catch(Exception e){
 			e.printStackTrace();

@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Iterator;
+
 import javax.swing.JFrame;
 
 import chat.ChatServer;
@@ -140,7 +141,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 								System.out.println("GS: Connecting... ");
 								String tokens[] = playerData.split(" ");
 								
-								NetPlayer player = new NetPlayer(tokens[1],packet.getAddress(),packet.getPort());
+								NetPlayer player = new NetPlayer(tokens[1],packet.getAddress(),packet.getPort(), playerCount);
 								
 								if(!game.getPlayers().containsKey(tokens[1])){	
 									System.out.println("GS: Player " + player.getName() + " just connected.");

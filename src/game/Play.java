@@ -273,10 +273,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		messagesTF.render(gc, g);
 		inputTF.render(gc, g);
 
-		// Working on errors.
-		if(error == ERROR_NAME_EXISTS){
-			sbg.enterState(CLIENT_SETUP);
-		}
+		
 	}
 
 	@SuppressWarnings("unused")

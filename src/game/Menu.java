@@ -35,11 +35,10 @@ public class Menu extends BasicGameState implements Constants{
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		g.drawString(APP_NAME, 50, 50);
-		g.drawString(mouse, 650, 25);
+		g.drawString(mouse, 700, 25);
 		logo.draw(100, 50);
 		g.drawString("HOW TO PLAY", 50, 350);
-		g.drawString("HOST", 250, 350);
-		g.drawString("PLAY", 450, 350);
+		g.drawString("PLAY", 360, 350);
 		g.drawString("EXIT", 650, 350);
 	}
 
@@ -49,22 +48,18 @@ public class Menu extends BasicGameState implements Constants{
 		int xPos = Mouse.getX();
 		int yPos = Mouse.getY();
 		
-		mouse = "X: " + xPos + " Y: " + yPos;
+		mouse = "X: " + xPos + "\nY: " + yPos;
 		if((xPos > 40 && xPos < 155) && (yPos > 30 && yPos < 50)){
 			if(input.isMouseButtonDown(0)){
 				sbg.enterState(HOW_TO);
 			}
 		}
-		if((xPos > 240 && xPos < 290) && (yPos > 30 && yPos < 50)){
+		if((xPos > 350 && xPos < 400) && (yPos > 30 && yPos < 50)){
 			if(input.isMouseButtonDown(0)){
-				sbg.enterState(SERVER_SETUP);
+				sbg.enterState(SETUP);
 			}
 		}
-		if((xPos > 445 && xPos < 490) && (yPos > 30 && yPos < 50)){
-			if(input.isMouseButtonDown(0)){
-				sbg.enterState(CLIENT_SETUP);
-			}
-		}
+		
 		if((xPos > 640 && xPos < 700) && (yPos > 30 && yPos < 50)){
 			if(input.isMouseButtonDown(0)){
 				System.exit(0);

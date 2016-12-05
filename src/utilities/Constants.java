@@ -16,8 +16,7 @@ public interface Constants {
 	 * */
 	public static final int MENU = 0;
 	public static final int PLAY = 1;
-	public static final int SERVER_SETUP = 2;
-	public static final int CLIENT_SETUP = 3;
+	public static final int SETUP = 2;
 	public static final int HOW_TO = 4;
 	
 	
@@ -47,5 +46,11 @@ public interface Constants {
 	 * */
 	public static final int X_SPEED = 1;
 	public static final int Y_SPEED = 1;
+	
+	/*
+	 * Addresses
+	 * */
+	public static final String localhost = "127.0.0.1";
+	public static final String MULTICAST_ADDRESS = "224.0.0.1";
 	
 }

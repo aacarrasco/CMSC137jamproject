@@ -25,8 +25,7 @@ public class PacGame extends StateBasedGame implements Constants{
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {	
 		this.addState(new Menu(MENU));
-		this.addState(new ServerSetup(SERVER_SETUP));
-		this.addState(new ClientSetup(CLIENT_SETUP));
+		this.addState(new Setup(SETUP));
 		//this.addState(new Play(PLAY));
 		this.addState(new HowTo(HOW_TO));
 		this.enterState(MENU);

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package framework;
+package utilities;
 
 /**
  * @author aacarrasco

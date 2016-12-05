@@ -8,8 +8,8 @@ import java.util.Iterator;
 import javax.swing.JFrame;
 
 import chat.ChatServer;
-import framework.Constants;
 import utilities.CSVreader;
+import utilities.Constants;
 
 /**
  * The main game server. It just accepts the messages sent by one player to

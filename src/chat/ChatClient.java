@@ -9,7 +9,7 @@ import java.net.Socket;
 
 import org.newdawn.slick.gui.TextField;
 
-import framework.Constants;
+import utilities.Constants;
 
 /**
  * Client for chat module

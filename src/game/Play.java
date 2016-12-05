@@ -33,7 +33,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 
 import chat.ChatClient;
-import framework.Constants;
+import utilities.Constants;
 
 /**
  * @author aacarrasco

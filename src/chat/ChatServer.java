@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import framework.Constants;
+import utilities.Constants;
 
 /**
  * Server for chat module

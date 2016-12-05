@@ -10,6 +10,17 @@ package framework;
 public interface Constants {
 	public static final String APP_NAME="Pac-Ganern!";
 	public static final String SERVER_NAME = "127.0.0.1";
+	
+	/*
+	 * Window States
+	 * */
+	public static final int MENU = 0;
+	public static final int PLAY = 1;
+	public static final int SERVER_SETUP = 2;
+	public static final int CLIENT_SETUP = 3;
+	public static final int HOW_TO = 4;
+	
+	
 	/**
 	 * Game states.
 	 */
@@ -21,6 +32,20 @@ public interface Constants {
 	/**
 	 * Game port
 	 */
-	public static final int PORT=4444;
+	public static final int CHAT_PORT=4444;
 	public static final int GAME_PORT=1337;
+	public static final int MULTICAST_PORT=1338;
+	
+	/*
+	 * Error codes
+	 * */
+	public static final int ERROR_CONNECTION_FAILED = 1;
+	public static final int ERROR_NAME_EXISTS = 2;
+	
+	/*
+	 * Player Speeds
+	 * */
+	public static final int X_SPEED = 1;
+	public static final int Y_SPEED = 1;
+	
 }

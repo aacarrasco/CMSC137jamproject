@@ -6,113 +6,136 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
+
+import org.newdawn.slick.gui.TextField;
 
 import framework.Constants;
-import window.ChatWindow;
 
+/**
+ * Client for chat module
+ * @author aacarrasco
+ *
+ */
 public class ChatClient implements Runnable, Constants {
-   
-  Socket client;
-  String name;
-  Thread inThread;
-  ChatWindow chatWindow;
-  private int port;
-  private String address;
-  
-  public ChatClient() throws UnknownHostException, IOException{
-		//this.client = new Socket(SERVER_NAME, PORT);
-		this.chatWindow = new ChatWindow(this.client);
-		this.client = this.chatWindow.getClient();
-			
-		this.name = this.chatWindow.getName();
-		this.setClientAddress(this.chatWindow.getClientAddress());
-		this.port = PORT;
+
+	Thread inThread;
+	TextField messagesTF;
+	
+	private Socket client;
+	private String name;
+	private String address;
+	
+	public ChatClient(String name, String address) {	
+		this.name = name;
+		//this.address = address;
+		this.address = "127.0.0.1";
 		
-		System.out.println(this.name + " is connecting to " + SERVER_NAME + " on port " + this.port);
-		System.out.println("Just connected to " + this.client.getRemoteSocketAddress());
+		try{
+			this.client = new Socket(this.address, CHAT_PORT);
+		} catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		System.out.println("CC: " + this.name + " is connecting to " + SERVER_NAME + " on port " + CHAT_PORT);
+		System.out.println("CC: Just connected to " + this.client.getRemoteSocketAddress());
 
-		OutputStream outToServer = this.client.getOutputStream();
+		OutputStream outToServer = null;
+		try {
+			outToServer = this.client.getOutputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		DataOutputStream out = new DataOutputStream(outToServer);
-		out.writeUTF(this.name + " has joined the conversation.");
-
-		initializeThreads();
+		try {
+			out.writeUTF(this.name + " has joined the conversation.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		Thread t = new Thread(this);
 		t.start();
 	}
 
+	public void setMessagesTF(TextField messagesTF){
+		this.messagesTF = messagesTF;
+	}
+	
+	public void run(){
+		
+		try{
+			Thread.sleep(1000);
+			// Receive data from the ServerSocket
+			InputStream inFromServer = client.getInputStream();
+			DataInputStream in = new DataInputStream(inFromServer);
 
-  public void run(){
-    
-    this.inThread.start();
-    
-  }
-  
-  
-  public void initializeThreads(){
-    
-    // For incoming messages
-    this.inThread = new Thread(){
-    
-      public void run(){
-      
-        try{
-          
-          // Receive data from the ServerSocket
-          InputStream inFromServer = client.getInputStream();
-          DataInputStream in = new DataInputStream(inFromServer);
-    
-          while(true){
-            String message = in.readUTF();
-          	chatWindow.getMessageTextArea().append("\n" + message);  	
-          }
-    
-        } catch(Exception e){
-          //e.printStackTrace();
-        }
-      
-      }
-  
-    };
-  
-  }
+			while(true){
+				String message = in.readUTF();
+				//chatWindow.getMessageTextArea().append("\n" + message);	
+				messagesTF.setText(messagesTF.getText() + "\n" + message);
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	public void initializeThreads(){
+		
+		// For incoming messages
+		this.inThread = new Thread(){
+		
+			public void run(){
+			
+				try{
+					
+					// Receive data from the ServerSocket
+					InputStream inFromServer = client.getInputStream();
+					DataInputStream in = new DataInputStream(inFromServer);
+		
+					while(true){
+						String message = in.readUTF();
+						messagesTF.setText(messagesTF.getText() + "\n" + message);
+					}
+		
+				} catch(Exception e){
+					//e.printStackTrace();
+				}
+			
+			}
+	
+		};
+	
+	}
 
 
-/**
- * @return the address
- */
-public String getClientAddress() {
-	return address;
-}
-
-
-/**
- * @param address the address to set
- */
-public void setClientAddress(String address) {
-	this.address = address;
-}
-      
-
- /* public static void main(String [] args) {
-
-    try {
-    
-      String serverName = args[0];
-      int port = Integer.parseInt(args[1]); 
-      String name = args[2]; 
-
-      ChatClient chatClient = new ChatClient(name, serverName, port);
-      Thread t = new Thread(chatClient);
-      t.start();
-    
-      
-    } catch(ArrayIndexOutOfBoundsException e) {
-      System.out.println("Usage: java chatClientent <server ip> <port no.> <name>");
-    } catch(Exception e){
-      System.out.println("Usage: java ChatClient <server ip> <port no.> <name>");
-    }
-
-  }*/
+	/**
+	 * @return the address
+	 */
+	public String getClientAddress() {
+		return address;
+	}
+	
+	/**
+	 * @param address the address to set
+	 */
+	public void setClientAddress(String address) {
+		this.address = address;
+	}
+	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * @return the client
+	 */
+	public Socket getClient(){
+		return client;
+	}
+ 
 }

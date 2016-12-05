@@ -6,49 +6,46 @@ import java.net.Socket;
 
 import framework.Constants;
 
-public class ChatServer implements Runnable, Constants {
-  private ServerSocket serverSocket;
+/**
+ * Server for chat module
+ * @author aacarrasco
+ *
+ */
 
-  public ChatServer() throws IOException {
+public class ChatServer implements Runnable, Constants {
+	private ServerSocket serverSocket;
+	int numClients;
+
+	public ChatServer(int numClients) throws IOException {
 		
-		serverSocket = new ServerSocket(PORT);
+		serverSocket = new ServerSocket(CHAT_PORT);
+		this.numClients = numClients;
+		
 		Thread t = new Thread(this);
 		t.start();
 	}
 
-  public void run() {
-    while(true) { // continuously waits for clients to connect
-      try {
-        System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
-        
-        Socket client = serverSocket.accept();
-  
-        // Set serverListener and add new client to clientList
-        ChatServerListener serverListener = new ChatServerListener(client);
-        ChatServerListener.clientList.add(serverListener);
+	public void run() {
+		while(true) { // continuously waits for clients to connect
+			try {
+			System.out.println("CS: Waiting for clients on port " + serverSocket.getLocalPort() + "...");
+			
+				Socket client = serverSocket.accept();
+	
+				// Set serverListener and add new client to clientList
+				ChatServerListener serverListener = new ChatServerListener(client);
+				ChatServerListener.clientList.add(serverListener);
 
-        Thread t = new Thread(serverListener);
-        t.start();
-        
-        System.out.println("Just connected to " + client.getRemoteSocketAddress());
-        
-      } catch(IOException e) {
-        System.out.println("Usage: java ChatServer <port no.>");
-        break;
-      }
-    } 
-  }
+				Thread t = new Thread(serverListener);
+				t.start();
+				
+				System.out.println("CS: Just connected to " + client.getRemoteSocketAddress());
+				
+			} catch(IOException e) {
+				break;
+			}
+		} 
+	}
 
-  /*public static void main(String [] args) { 
-    try {
-       int port = Integer.parseInt(args[0]);
-       Thread t = new ChatServer(port);
-       t.start();
-    } catch(IOException e) {
-       System.out.println("Usage: java ChatServer <port no.>");
-    } catch(ArrayIndexOutOfBoundsException e) {
-       System.out.println("Usage: java ChatServer <port no.> ");
-    }
-  }*/
 }
 

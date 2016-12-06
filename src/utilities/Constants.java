@@ -10,6 +10,8 @@ package utilities;
 public interface Constants {
 	public static final String APP_NAME="Pac-Ganern!";
 	public static final String SERVER_NAME = "127.0.0.1";
+	public static final String MULTICAST_ADDRESS = "224.0.0.1";
+	
 	
 	/*
 	 * Window States
@@ -48,14 +50,8 @@ public interface Constants {
 	public static final int Y_SPEED = 1;
 	
 	/*
-	 * Addresses
-	 * */
-	public static final String localhost = "127.0.0.1";
-	public static final String MULTICAST_ADDRESS = "224.0.0.1";
-	
-	/*
 	 * UI
 	 * */
-	public static final int COLOR_COUNT = 2;
+	public static final int COLOR_COUNT = 4;
 	
 }

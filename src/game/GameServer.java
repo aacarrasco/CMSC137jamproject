@@ -25,7 +25,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 	
 	// UDP setup
 	DatagramSocket serverSocket = null;
-	DatagramSocket server;
+	//DatagramSocket server;
 	InetAddress address;
 	String data;
 	String playerData;
@@ -50,12 +50,12 @@ public class GameServer extends JFrame implements Runnable, Constants{
 		this.numPlayers = numPlayers;
 		try {
 			this.address = InetAddress.getByName(address);
-			server = new DatagramSocket(GAME_PORT);
+		//	server = new DatagramSocket(GAME_PORT);
 		} catch(IOException e){
 			e.printStackTrace();
 		}
 		
-		collisions = csvreader.readCollision("assets/csv/map3_4_TileLayer1.csv");
+		collisions = csvreader.readCollision("src/assets/csv/map3_4_TileLayer1.csv");
 		
 		for(int i = 0; i < 30; i++){
 			for(int j = 0; j < 30; j++){
@@ -108,11 +108,11 @@ public class GameServer extends JFrame implements Runnable, Constants{
 			ioe.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void run(){
 		try{
-			serverSocket = new DatagramSocket();
+			serverSocket = new DatagramSocket(GAME_PORT);
 		} catch(IOException ioe){
 			ioe.printStackTrace();
 		} catch(Exception e){
@@ -120,7 +120,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 		}
 		
 		game = new GameState();
-		game.setSpawnPoints(csvreader.readSpawn("assets/csv/map3_4_Spawn3.csv"));
+		game.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map3_4_Spawn3.csv"));
 		System.out.println("Game created. Waiting for " + numPlayers + " players.");
 		
 		inThread = new Thread(){
@@ -131,7 +131,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 					
 					try{
 						
-						server.receive(packet);
+						serverSocket.receive(packet);
 						playerData = new String(buf);
 						playerData = playerData.trim();
 						
@@ -168,21 +168,14 @@ public class GameServer extends JFrame implements Runnable, Constants{
 							if(playerData.startsWith("PLAYER")){
 								String[] playerInfo = playerData.split(" ");
 								String pname = playerInfo[1];
-								//int x = Integer.parseInt(playerInfo[2].trim());
-								//int y = Integer.parseInt(playerInfo[3].trim());
 								String direction = playerInfo[2].trim();
-								//boolean isAlive = Boolean.parseBoolean(playerInfo[5]);
 								
 								// Get player from gameState
 								NetPlayer player = (NetPlayer)game.getPlayers().get(pname);
-								//player.setX(x);
-								//player.setY(y);
 								player.setDirection(direction);
-								//player.setAlive(isAlive);
 								
 								// Update gameState
 								game.update(pname, player);
-								
 								
 							}
 						}

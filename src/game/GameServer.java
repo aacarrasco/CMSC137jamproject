@@ -25,7 +25,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 	
 	// UDP setup
 	DatagramSocket serverSocket = null;
-	DatagramSocket server;
+	//DatagramSocket server;
 	InetAddress address;
 	String data;
 	String playerData;
@@ -50,7 +50,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 		this.numPlayers = numPlayers;
 		try {
 			this.address = InetAddress.getByName(address);
-			server = new DatagramSocket(GAME_PORT);
+		//	server = new DatagramSocket(GAME_PORT);
 		} catch(IOException e){
 			e.printStackTrace();
 		}
@@ -112,7 +112,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 	@Override
 	public void run(){
 		try{
-			serverSocket = new DatagramSocket();
+			serverSocket = new DatagramSocket(GAME_PORT);
 		} catch(IOException ioe){
 			ioe.printStackTrace();
 		} catch(Exception e){
@@ -131,7 +131,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 					
 					try{
 						
-						server.receive(packet);
+						serverSocket.receive(packet);
 						playerData = new String(buf);
 						playerData = playerData.trim();
 						

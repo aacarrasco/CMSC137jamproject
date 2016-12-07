@@ -116,10 +116,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 			e1.printStackTrace();
 		}
 		
-		// Initialize chat module
-		setChat(new ChatClient(this.name, this.server));
-		client = chat.getClient();
-		
+			
 	}
 	
 	@Override
@@ -212,6 +209,8 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		
 	}
 	
+	
+	
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {		
 		
@@ -235,6 +234,10 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		inputTF.setCursorVisible(true);
 		inputTF.setAcceptingInput(true);
 		
+		// Initialize chat module
+		setChat(new ChatClient(this.name, this.server));
+		client = chat.getClient();
+			
 		chat.setMessagesTF(messagesTF);
 		
 		// Animate players here

@@ -17,11 +17,13 @@ public class Setup extends BasicGameState implements Constants{
 	TextField addressTF;
 	TextField nameTF;
 	TextField clientAddressTF;
+	TextField hostAddressTF;
 	
 	private int numPlayers;
 	private String address = MULTICAST_ADDRESS;
 	private String name;
 	private String clientAddress = MULTICAST_ADDRESS;
+	private String hostAddress = "127.0.0.1";
 	String mouse = "No input yet!";
 	String status = "";
 	
@@ -58,6 +60,12 @@ public class Setup extends BasicGameState implements Constants{
 		clientAddressTF.setTextColor(Color.lightGray);
 		clientAddressTF.setAcceptingInput(true);
 		
+		hostAddressTF = new TextField(gc, gc.getDefaultFont(), 500, 220, 200, 20);
+		hostAddressTF.setBackgroundColor(Color.white);
+		hostAddressTF.setText("127.0.0.1");
+		hostAddressTF.setTextColor(Color.lightGray);
+		hostAddressTF.setAcceptingInput(true);
+		
 	}
 
 	@Override
@@ -67,7 +75,7 @@ public class Setup extends BasicGameState implements Constants{
 		g.drawString("Server Setup", 50, 50);
 		g.drawString("Enter Number of Players: " + numPlayers, 50, 80);
 		numPlayersTF.render(gc, g);
-		g.drawString("Enter IP Address: " + address, 50, 140);
+		g.drawString("Enter Group Address: " + address, 50, 140);
 		addressTF.render(gc, g);
 		g.drawString("Host Game", 100, 200);
 		g.drawString(status, 100, 250);		
@@ -76,10 +84,12 @@ public class Setup extends BasicGameState implements Constants{
 		g.drawString("Player Setup", 450, 50);
 		g.drawString("Enter Name: " + name, 450, 80);
 		nameTF.render(gc, g);
-		g.drawString("Enter IP Address: " + clientAddress, 450, 140);
+		g.drawString("Enter Group Address: " + clientAddress, 450, 140);
 		clientAddressTF.render(gc, g);
+		g.drawString("Enter Host Address: " + hostAddress, 450, 200);
+		hostAddressTF.render(gc, g);
 		
-		g.drawString("Join Game", 500, 200);
+		g.drawString("Join Game", 500, 300);
 		
 		g.drawString("Go Back to Menu", 100, 300);
 		
@@ -103,13 +113,14 @@ public class Setup extends BasicGameState implements Constants{
 				
 			}
 		}
-		if((xPos > 495 && xPos < 585) && (yPos > 180 && yPos < 200)){
+		if((xPos > 495 && xPos < 585) && (yPos > 80 && yPos < 100)){
 			if(input.isMouseButtonDown(0)){
 				numPlayers = Integer.parseInt(numPlayersTF.getText());
 				clientAddress = addressTF.getText();
 				name = nameTF.getText();
+				hostAddress = hostAddressTF.getText();
 				
-				sbg.addState(new Play(PLAY, name, clientAddress));
+				sbg.addState(new Play(PLAY, name, clientAddress, hostAddress));
 				sbg.getState(PLAY).init(gc, sbg);
 				sbg.enterState(PLAY);
 			}

@@ -49,6 +49,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	
 	DatagramSocket socket;
 	private String server;
+	private String host;
 	private InetAddress address;
 	String message = "";
 	String spawn = "";
@@ -102,9 +103,10 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		
 	}
 	
-	public Play(int state, String name, String address) {
+	public Play(int state, String name, String address, String host) {
 		this.name = name;
 		this.server = address;
+		this.host = host;
 		this.isCurrAlive = true;
 		try {
 			this.address = InetAddress.getByName(server);
@@ -542,7 +544,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		try{
 			
 			byte[] buf = msg.getBytes();
-        	InetAddress address = InetAddress.getByName("127.0.0.1");
+        	InetAddress address = InetAddress.getByName(host);
         	DatagramPacket packet = new DatagramPacket(buf, buf.length, address, GAME_PORT);
         	
         	//if(packet!=null)

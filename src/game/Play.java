@@ -65,6 +65,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	
 	private TiledMap map;
 	
+	private int id;
 	private ArrayList<Animation> players;
 	private ArrayList<Circle> playerBounds;
 	private ArrayList<Float> xPos;
@@ -156,10 +157,12 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 					if(serverData.startsWith("CONNECTED")){
 						connected = true;
 						System.out.println("GC: Player " + token[1] + " is connected.");
+						id = Integer.parseInt(token[5]);
 						//currXPos = Integer.parseInt(token[2]);
 						//currYPos = Integer.parseInt(token[3]);
 						switch(Integer.parseInt(token[4])){
 							case 1:
+							case 2:
 								map	= new TiledMap("assets/tmx/map3_4.tmx");
 								break;
 							case 3:	
@@ -407,7 +410,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 				if(isAlive && !powerUp){
 					switch(direction){
 					case "UP":
-						players.set(i, movingUp[playerNo]);
+						players.set(i, movingUp[0]);
 						break;
 					case "DOWN":
 						players.set(i, movingDown[playerNo]);

@@ -3,9 +3,7 @@
  */
 package game;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -28,7 +25,6 @@ import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.command.InputProviderListener;
 import org.newdawn.slick.command.KeyControl;
 import org.newdawn.slick.geom.Circle;
-import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
@@ -41,8 +37,8 @@ import utilities.Constants;
  * @author mqcabailo
  */
 public class Play extends BasicGameState implements Constants, InputProviderListener, Runnable{
-	private TextField messagesTF;
-	private TextField inputTF;
+	//private TextField messagesTF;
+	//private TextField inputTF;
 	private ChatClient chat;
 	private String name;
 	private boolean isCurrAlive;
@@ -222,28 +218,14 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		map	= new TiledMap("assets/tmx/map5_6.tmx");
 		
 		//resize container
-		((AppGameContainer)gc).setDisplayMode((map.getWidth()*16) + 200, map.getHeight()*16, false);
+		((AppGameContainer)gc).setDisplayMode((map.getWidth()*16), map.getHeight()*16, false);
 		
-		// Setup chatbox
-		messagesTF = new TextField(gc, gc.getDefaultFont(), map.getWidth()*16, 0, 200, (map.getHeight()*16)-100);
-		messagesTF.setBackgroundColor(Color.white);
-		messagesTF.setTextColor(Color.lightGray);
-		messagesTF.setBorderColor(Color.gray);
-		messagesTF.setAcceptingInput(false);
-		
-		inputTF = new TextField(gc, gc.getDefaultFont(), map.getWidth()*16, (map.getHeight()*16) - 100, 200, 100);
-		inputTF.setBackgroundColor(Color.white);
-		inputTF.setBorderColor(Color.gray);
-		inputTF.setTextColor(Color.black);
-		inputTF.setCursorVisible(true);
-		inputTF.setAcceptingInput(true);
 		
 		// Initialize chat module
 		setChat(new ChatClient(this.name, this.server));
 		client = chat.getClient();
 			
-		chat.setMessagesTF(messagesTF);
-		
+
 		// Animate players here
 		Image[][] up = new Image[COLOR_COUNT][4];
 		Image[][] down = new Image[COLOR_COUNT][4];
@@ -361,38 +343,12 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	
 		g.drawString(test, 0, 20);
 		
-		// Render Chat Module
-		messagesTF.render(gc, g);
-		inputTF.render(gc, g);
-
 		
 	}
 
 	@SuppressWarnings("unused")
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		
-		// For Chat module, listens to ENTER key to send messages.
-		if(gc.getInput().isKeyPressed(Input.KEY_ENTER)){
-			String message = inputTF.getText().trim();
-			if(message.length()!=0) {
-				// Send data to the ServerSocket 
-				OutputStream outToServer = null;
-				try {
-					outToServer = client.getOutputStream();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-				DataOutputStream out = new DataOutputStream(outToServer);		
-				try {
-					out.writeUTF(this.name + ": " + message);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}	
-			}
-			inputTF.setText("");
-		}
 		
 		try{
 

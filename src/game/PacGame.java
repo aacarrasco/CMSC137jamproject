@@ -46,6 +46,7 @@ public class PacGame extends StateBasedGame implements Constants{
 		try{
 			appgc = new AppGameContainer(new PacGame());
 			appgc.setDisplayMode(800, 400, false);
+			appgc.setVSync(true);
 			appgc.start();
 		} catch(SlickException e){
 			e.printStackTrace();

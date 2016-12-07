@@ -298,7 +298,9 @@ public class GameServer extends JFrame implements Runnable, Constants{
 		spawner = new Thread(){
 			public void run(){
 				while(true){
-					
+					for(int i = 0; i < game.getPowerUps().size(); i++){
+						game.getPowerUps().get(i).setUp(true);
+					}
 					broadcast(serverSocket, "SPAWN");
 					try{
 						Thread.sleep(20000);

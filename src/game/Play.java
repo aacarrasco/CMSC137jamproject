@@ -27,6 +27,7 @@ import org.newdawn.slick.command.Command;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.command.InputProviderListener;
 import org.newdawn.slick.command.KeyControl;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -65,12 +66,13 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	private TiledMap map;
 	
 	private ArrayList<Animation> players;
-	//private ArrayList<Circle> playerBounds;
+	private ArrayList<Circle> playerBounds;
 	private ArrayList<Float> xPos;
 	private ArrayList<Float> yPos;
 	
 	private ArrayList<Image> food;
 	private ArrayList<Image> powerUp;
+	private ArrayList<Circle> powerBounds;
 	private ArrayList<Float> xPower;
 	private ArrayList<Float> yPower;
 	//private ArrayList<Boolean> powerIsUp;
@@ -156,6 +158,19 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 						System.out.println("GC: Player " + token[1] + " is connected.");
 						//currXPos = Integer.parseInt(token[2]);
 						//currYPos = Integer.parseInt(token[3]);
+						switch(Integer.parseInt(token[4])){
+							case 1:
+								map	= new TiledMap("assets/tmx/map3_4.tmx");
+								break;
+							case 3:	
+							case 4:
+								map	= new TiledMap("assets/tmx/map3_4.tmx");
+								break;
+							case 5:
+							case 6:
+								map	= new TiledMap("assets/tmx/map5_6.tmx");
+								break;
+						}
 					}
 					System.out.println("GC: CONNECT " + name + " " + connected);
 					
@@ -172,6 +187,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 							yPos.add(0f);
 							players.add(new Animation());	
 							players.get(i).start();
+							playerBounds.add(new Circle(Math.round(xPos.get(i)), Math.round(yPos.get(i)), 20));
 						}
 						
 					}
@@ -190,6 +206,8 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 			}
 		} catch(IOException ioe){
 			ioe.printStackTrace();
+		} catch (SlickException e) {
+			e.printStackTrace();
 		}
 		
 	}
@@ -198,7 +216,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {		
 		
 		//map
-		map	= new TiledMap("assets/tmx/map3_4.tmx");
+		map	= new TiledMap("assets/tmx/map5_6.tmx");
 		
 		//resize container
 		((AppGameContainer)gc).setDisplayMode((map.getWidth()*16) + 200, map.getHeight()*16, false);
@@ -288,10 +306,12 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		}
 				
 		players = new ArrayList<Animation>();
+		playerBounds = new ArrayList<Circle>();
 		xPos 	= new ArrayList<Float>();
 		yPos	= new ArrayList<Float>();
 		
 		powerUp	= new ArrayList<Image>();
+		powerBounds = new ArrayList<Circle>();
 		xPower	= new ArrayList<Float>();
 		yPower	= new ArrayList<Float>();
 		
@@ -316,17 +336,22 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		g.scale(.5f, .5f);
+		
 		map.render(0, 0);
+		
 		for(int i = 0; i<players.size(); i++){
-			players.get(i).draw(xPos.get(i), yPos.get(i), 32f, 32f);
+			players.get(i).draw(xPos.get(i), yPos.get(i), 64f, 64f);
+			
+			g.draw(playerBounds.get(i));
 		}
 		
 		for(int i = 0; i<powerUp.size(); i++){
-			powerUp.get(i).draw(xPower.get(i), yPower.get(i), 32f, 32f);
+			powerUp.get(i).draw(xPower.get(i), yPower.get(i), 64f, 64f);
 		}
+
 		
 		g.scale(2f, 2f);
-		
+	
 		g.drawString(test, 0, 20);
 		
 		// Render Chat Module
@@ -414,6 +439,9 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 				xPos.set(i, x * 8);
 				yPos.set(i, y * 8);
 				
+				playerBounds.get(i).setCenterX(x * 8 + 32);
+				playerBounds.get(i).setCenterY(y * 8 + 32);
+				
 			}
 			
 
@@ -424,13 +452,15 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 			
 			String[] spawnsInfo = spawn.split(":");
 			for(int i = 0; i < spawnsInfo.length; i++){
-
+				
 				String[] spawnInfo = spawnsInfo[i].split(" ");
 				
 				if(spawnInfo[0].equals("POWERUP") && !Boolean.parseBoolean(spawnInfo[3])){
-					xPower.add(Float.parseFloat(spawnInfo[2])*32);
-					yPower.add(Float.parseFloat(spawnInfo[1])*32);
+					xPower.add(Float.parseFloat(spawnInfo[1]) * 8);
+					yPower.add(Float.parseFloat(spawnInfo[2]) * 8);
+					
 					powerUp.add(new Image("assets/sprites/objects/powerUp.png"));
+					
 				}
 				if(spawnInfo[0].trim() == "FOOD"){
 					food.add(new Image("assets/sprites/objects/points.png"));

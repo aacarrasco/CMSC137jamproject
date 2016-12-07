@@ -52,6 +52,6 @@ public interface Constants {
 	/*
 	 * UI
 	 * */
-	public static final int COLOR_COUNT = 4;
+	public static final int COLOR_COUNT = 2;
 	
 }

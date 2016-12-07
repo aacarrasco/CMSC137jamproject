@@ -65,6 +65,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	
 	private TiledMap map;
 	
+	private int id;
 	private ArrayList<Animation> players;
 	private ArrayList<Circle> playerBounds;
 	private ArrayList<Float> xPos;
@@ -153,10 +154,12 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 					if(serverData.startsWith("CONNECTED")){
 						connected = true;
 						System.out.println("GC: Player " + token[1] + " is connected.");
+						id = Integer.parseInt(token[5]);
 						//currXPos = Integer.parseInt(token[2]);
 						//currYPos = Integer.parseInt(token[3]);
 						switch(Integer.parseInt(token[4])){
 							case 1:
+							case 2:
 								map	= new TiledMap("assets/tmx/map3_4.tmx");
 								break;
 							case 3:	
@@ -182,9 +185,10 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 						for(int i = 0; i<numPlayers; i++){
 							xPos.add(0f);
 							yPos.add(0f);
+							playerBounds.add(new Circle(Math.round(xPos.get(i)), Math.round(yPos.get(i)), 20));
 							players.add(new Animation());	
 							players.get(i).start();
-							playerBounds.add(new Circle(Math.round(xPos.get(i)), Math.round(yPos.get(i)), 20));
+							
 						}
 						
 					}
@@ -410,16 +414,32 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 				if(isAlive && !powerUp){
 					switch(direction){
 					case "UP":
-						players.set(i, movingUp[playerNo]);
+						if(id == i-1)
+							players.set(i, movingUp[0]);
+						else
+							players.set(i, movingUp[1]);
+						
 						break;
 					case "DOWN":
-						players.set(i, movingDown[playerNo]);
+						if(id == i-1)
+							players.set(i, movingDown[0]);
+						else
+							players.set(i, movingDown[1]);
+						
 						break;
 					case "LEFT":
-						players.set(i, movingLeft[playerNo]);
+						if(id == i-1)
+							players.set(i, movingLeft[0]);
+						else
+							players.set(i, movingLeft[1]);
+						
 						break;
 					case "RIGHT":
-						players.set(i, movingRight[playerNo]);
+						if(id == i-1)
+							players.set(i, movingRight[0]);
+						else
+							players.set(i, movingRight[1]);
+						
 						break;
 					}
 				} else if(isAlive && powerUp){

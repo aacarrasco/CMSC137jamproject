@@ -66,6 +66,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map3_4_power.csv"));
 				playerSpawn = csvreader.playerSpawns("src/assets/csv/map3_4_Player1.csv");
 				break;
+			case 2:
 			case 3:
 				collisions = csvreader.readCollision("src/assets/csv/map3_4_TileLayer1.csv");
 				//game.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map3_4_Spawn3.csv"));
@@ -177,7 +178,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 									player.setDirection("RIGHT");
 									game.update(tokens[1].trim(),player);
 									
-									broadcast(serverSocket, "CONNECTED "+ player.getName() + " " + player.getX() + " " + player.getY() + " " + numPlayers);
+									broadcast(serverSocket, "CONNECTED "+ player.getName() + " " + player.getX() + " " + player.getY() + " " + numPlayers + " " + player.getPlayerNo());
 											
 									playerCount++;
 									System.out.println("GS: " + playerCount + " out of " + numPlayers + " connected.");

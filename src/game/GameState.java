@@ -6,6 +6,7 @@ package game;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * @author aacarrasco
@@ -49,13 +50,9 @@ public class GameState {
 	}
 	
 	
-	public void setSpawnPoints(int[][] spawnPoints){
-		for(int i = 0; i < 30; i++){
-			for(int j = 0; j < 30; j++){
-				if(spawnPoints[i][j] == 1){
-					powerUps.add(new PowerUp(i, j));
-				}
-			}
+	public void setSpawnPoints(LinkedList<Integer> powerSpawn){
+		while(!powerSpawn.isEmpty()){
+			powerUps.add(new PowerUp(powerSpawn.pop(), powerSpawn.pop()));
 		}
 	}
 	

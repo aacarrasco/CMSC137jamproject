@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
 
 /**
  * @author mqcabailo
@@ -54,8 +55,8 @@ public class CSVreader {
 		return bool;
 	}
 	
-	public int[][] readSpawn(String file){
-		int[][] spawn= new int[30][30];
+	public LinkedList<Integer> powerSpawn(String file){
+		LinkedList<Integer> powerSpawn = new LinkedList<Integer>();
 		try {
 			br = new BufferedReader(new FileReader(file));
 			
@@ -64,13 +65,9 @@ public class CSVreader {
 				String[] values = line.split(",");
 
 				for(int j = 0; j < values.length ; j++){
-					if( Integer.parseInt(values[j]) == -1 ){
-						spawn[i][j] = 0;
-					}else if(Integer.parseInt(values[j]) == 1119){
-						spawn[i][j] = 1;
-					}else if(Integer.parseInt(values[j]) == 943){
-						spawn[i][j] = 2;
-					}
+
+					powerSpawn.add(Integer.parseInt(values[j]));
+				
 				}
 				
 			}
@@ -88,7 +85,39 @@ public class CSVreader {
 			}
 		}
 		
-		return spawn;
+		return powerSpawn;
+	}
+	
+	public LinkedList<Integer> playerSpawns(String file){
+		LinkedList<Integer> playerSpawn = new LinkedList<Integer>();
+		
+		try {
+			br = new BufferedReader(new FileReader(file));
+			
+			for(int i = 0;(line = br.readLine()) != null;i++) {
+				
+				String[] values = line.split(",");
+
+				for(int j = 0; j < values.length ; j++){
+					playerSpawn.add(Integer.parseInt(values[j]));
+				}
+				
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return playerSpawn;
 	}
 	
 }

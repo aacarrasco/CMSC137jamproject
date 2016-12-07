@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.swing.JFrame;
 
@@ -36,6 +37,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 	int gameStage = WAITING_FOR_PLAYERS;
 	int numPlayers;
 	boolean[][] collisions;
+	LinkedList<Integer> playerSpawn; 
 	int [][] spawnPoints;
 	CSVreader csvreader = new CSVreader();
 	
@@ -48,6 +50,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 	
 	public GameServer(int numPlayers, String address){
 		this.numPlayers = numPlayers;
+		
 		try {
 			this.address = InetAddress.getByName(address);
 			server = new DatagramSocket(GAME_PORT);
@@ -55,7 +58,32 @@ public class GameServer extends JFrame implements Runnable, Constants{
 			e.printStackTrace();
 		}
 		
-		collisions = csvreader.readCollision("assets/csv/map3_4_TileLayer1.csv");
+		game = new GameState();
+		
+		switch(numPlayers){
+			case 1:
+				collisions = csvreader.readCollision("src/assets/csv/map3_4_TileLayer1.csv");
+				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map3_4_power.csv"));
+				playerSpawn = csvreader.playerSpawns("src/assets/csv/map3_4_Player1.csv");
+				break;
+			case 3:
+				collisions = csvreader.readCollision("src/assets/csv/map3_4_TileLayer1.csv");
+				//game.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map3_4_Spawn3.csv"));
+				playerSpawn = csvreader.playerSpawns("src/assets/csv/map3_4_Player3.csv");
+			case 4:
+				collisions = csvreader.readCollision("src/assets/csv/map3_4_TileLayer1.csv");
+				//game.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map3_4_Spawn4.csv"));
+				playerSpawn = csvreader.playerSpawns("src/assets/csv/map3_4_Player4.csv");
+				break;
+			case 5:
+				collisions = csvreader.readCollision("src/assets/csv/map5_6_TileLayer1.csv");
+				//game.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map5_6_Spawn5.csv"));
+				break;
+			case 6:
+				collisions = csvreader.readCollision("src/assets/csv/map5_6_TileLayer1.csv");
+				//sgame.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map5_6_Spawn6.csv"));
+				break;
+		}
 		
 		for(int i = 0; i < 30; i++){
 			for(int j = 0; j < 30; j++){
@@ -119,8 +147,6 @@ public class GameServer extends JFrame implements Runnable, Constants{
 			e.printStackTrace();
 		}
 		
-		game = new GameState();
-		game.setSpawnPoints(csvreader.readSpawn("assets/csv/map3_4_Spawn3.csv"));
 		System.out.println("Game created. Waiting for " + numPlayers + " players.");
 		
 		inThread = new Thread(){
@@ -141,17 +167,17 @@ public class GameServer extends JFrame implements Runnable, Constants{
 								System.out.println("GS: Connecting... ");
 								String tokens[] = playerData.split(" ");
 								
-								NetPlayer player = new NetPlayer(tokens[1],packet.getAddress(),packet.getPort(), playerCount);
+								NetPlayer player = new NetPlayer(tokens[1],packet.getAddress(),packet.getPort(), playerCount, playerSpawn.pop(), playerSpawn.pop());
 								
 								if(!game.getPlayers().containsKey(tokens[1])){	
 									System.out.println("GS: Player " + player.getName() + " just connected.");
-									player.setX(0);
-									player.setY(0);
+									player.setX(player.getSpawnX());
+									player.setY(player.getSpawnY());
 									player.setAlive(true);
 									player.setDirection("RIGHT");
 									game.update(tokens[1].trim(),player);
 									
-									broadcast(serverSocket, "CONNECTED "+ player.getName() + " " + player.getX() + " " + player.getY());
+									broadcast(serverSocket, "CONNECTED "+ player.getName() + " " + player.getX() + " " + player.getY() + " " + numPlayers);
 											
 									playerCount++;
 									System.out.println("GS: " + playerCount + " out of " + numPlayers + " connected.");
@@ -228,31 +254,30 @@ public class GameServer extends JFrame implements Runnable, Constants{
 					
 					for(Iterator<String> ite=game.getPlayers().keySet().iterator();ite.hasNext();){
 						String name=(String)ite.next();
-						NetPlayer player=(NetPlayer)game.getPlayers().get(name);			
+						NetPlayer player=(NetPlayer)game.getPlayers().get(name);	
+						System.out.println(player.getY() + " : " + player.getX());
 						switch(player.getDirection()){
 						case "UP":
-							if((player.getY() - Y_SPEED) > 0 )
-								if(!collisions[(player.getY() - Y_SPEED)/4][player.getX()/4])
+							if((player.getY() - Y_SPEED) >= 0 )
+								if(!collisions[(player.getY() - Y_SPEED)/4][player.getX()/4] && !collisions[(player.getY() - Y_SPEED)/4][(player.getX() + 6)/4])
 									player.setY(player.getY() - Y_SPEED);
 							break;
 						case "DOWN":
-							if((player.getY() + Y_SPEED) + 1 < 120)
-								if(!collisions[(player.getY() + Y_SPEED + 1)/4][player.getX()/4])
+							if((player.getY() + Y_SPEED) + 6 < 120)
+								if(!collisions[((player.getY() + Y_SPEED + 6)/4)][(player.getX() + 6)/4] && !collisions[((player.getY() + Y_SPEED + 6)/4)][(player.getX())/4])
 									player.setY(player.getY() + Y_SPEED);
 							break;
 						case "LEFT":
-							if((player.getX() - X_SPEED) > 0)
-								if(!collisions[player.getY()/4][(player.getX() - X_SPEED)/4])
+							if((player.getX() - X_SPEED) >= 0)
+								if(!collisions[player.getY()/4][(player.getX() - X_SPEED)/4] && !collisions[(player.getY() + 6)/4][(player.getX() - X_SPEED)/4] && !collisions[(player.getY() + 3)/4][(player.getX() - X_SPEED)/4])
 									player.setX(player.getX() - X_SPEED);
 							break;
 						case "RIGHT":
-							if((player.getX() + X_SPEED) + 1 < 120)
-								if(!collisions[player.getY()/4][(player.getX() + X_SPEED + 1)/4])
+							if((player.getX() + X_SPEED) + 6 < 120)
+								if(!collisions[player.getY()/4][(player.getX() + X_SPEED + 6)/4] && !collisions[(player.getY() + 6)/4][(player.getX() + X_SPEED)/4] && !collisions[(player.getY() + 3)/4][(player.getX() + X_SPEED + 3)/4])
 									player.setX(player.getX() + X_SPEED);
 							break;
 						}
-						
-						
 						
 						game.update(name, player);
 					}

@@ -368,7 +368,6 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		scoreTF.render(gc, g);
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		

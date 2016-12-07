@@ -45,6 +45,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	private TextField inputTF;
 	private ChatClient chat;
 	private String name;
+	private boolean isCurrAlive;
 	Socket client;
 	
 	DatagramSocket socket;
@@ -105,6 +106,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	public Play(int state, String name, String address) {
 		this.name = name;
 		this.server = address;
+		this.isCurrAlive = true;
 		try {
 			this.address = InetAddress.getByName(server);
 			this.socket  = new DatagramSocket();
@@ -479,12 +481,14 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 
 	@Override
 	public void controlPressed(Command command) {
-		try{
-			String newDirection = ((BasicCommand) command).getName();
-			send("PLAYER " + name + " " + newDirection );
-			
-		} catch(Exception e){
-			e.printStackTrace();
+		if(isCurrAlive){
+			try{
+				String newDirection = ((BasicCommand) command).getName();
+				send("PLAYER " + name + " " + newDirection );
+				
+			} catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -530,5 +534,19 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	@Override
 	public int getID() {
 		return PLAY;
+	}
+
+	/**
+	 * @return the isCurrAlive
+	 */
+	public boolean isCurrAlive() {
+		return isCurrAlive;
+	}
+
+	/**
+	 * @param isCurrAlive the isCurrAlive to set
+	 */
+	public void setCurrAlive(boolean isCurrAlive) {
+		this.isCurrAlive = isCurrAlive;
 	}
 }

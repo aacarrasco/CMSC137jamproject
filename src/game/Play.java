@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -24,7 +25,7 @@ import org.newdawn.slick.command.Command;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.command.InputProviderListener;
 import org.newdawn.slick.command.KeyControl;
-import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
@@ -37,7 +38,7 @@ import utilities.Constants;
  * @author mqcabailo
  */
 public class Play extends BasicGameState implements Constants, InputProviderListener, Runnable{
-	//private TextField messagesTF;
+	private TextField scoreTF;
 	//private TextField inputTF;
 	private ChatClient chat;
 	private String name;
@@ -51,6 +52,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	String message = "";
 	String spawn = "";
 	String serverData;
+	String scores = "";
 	boolean connected = false;
 	int port;
 	int numPlayers = 0;
@@ -232,9 +234,15 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		map	= new TiledMap("assets/tmx/map5_6.tmx");
 		
 
-		((AppGameContainer)gc).setDisplayMode((map.getWidth()*16), map.getHeight()*16, false);
+		((AppGameContainer)gc).setDisplayMode((map.getWidth()*16) + 200, map.getHeight()*16, false);
 		
-
+		// Setup scores
+		scoreTF = new TextField(gc, gc.getDefaultFont(), map.getWidth()*16, 0, 200, (map.getHeight()*16));
+		scoreTF.setBackgroundColor(Color.darkGray);
+		scoreTF.setTextColor(Color.yellow);
+		scoreTF.setBorderColor(Color.gray);
+		scoreTF.setAcceptingInput(false);
+		
 		
 		// Initialize chat module
 		setChat(new ChatClient(this.name, this.server));
@@ -356,7 +364,8 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	
 		g.drawString(test, 0, 20);
 		
-		
+		scoreTF.setText(scores);
+		scoreTF.render(gc, g);
 	}
 
 	@SuppressWarnings("unused")
@@ -365,6 +374,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		
 		try{
 
+			scores = "PAC-GANERN\n\nScores:\n";
 			// Get player's info from messages, 
 			String[] playersInfo = message.split(":");
 			for(int i=0; i<playersInfo.length; i++){
@@ -380,6 +390,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 				//System.out.println("Player " + pname + " at " + x + " : " + y + " : " + direction + " : " + isAlive);
 				//int playerNo = Integer.parseInt(playerInfo[8]);
 				
+				scores += playerNo + " - " + pname + ": " + score + "\n";
 				if(isAlive && !powerUp){
 					switch(direction){
 					case "UP":

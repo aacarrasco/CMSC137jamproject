@@ -19,7 +19,7 @@ import utilities.Constants;
 public class ChatClient implements Runnable, Constants {
 
 	Thread inThread;
-	TextField messagesTF;
+	TextField messagesTF = null;
 	
 	private Socket client;
 	private String name;
@@ -59,6 +59,7 @@ public class ChatClient implements Runnable, Constants {
 
 	public void setMessagesTF(TextField messagesTF){
 		this.messagesTF = messagesTF;
+		this.messagesTF.setText("yo");
 	}
 	
 	public void run(){
@@ -72,7 +73,7 @@ public class ChatClient implements Runnable, Constants {
 			while(true){
 				String message = in.readUTF();
 				//chatWindow.getMessageTextArea().append("\n" + message);	
-				messagesTF.setText(messagesTF.getText() + "\n" + message);
+				this.messagesTF.setText(this.messagesTF.getText() + "\n" + message);
 			}
 		} catch(Exception e){
 			e.printStackTrace();

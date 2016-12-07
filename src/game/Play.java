@@ -117,10 +117,7 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 			e1.printStackTrace();
 		}
 		
-		// Initialize chat module
-		setChat(new ChatClient(this.name, this.server));
-		client = chat.getClient();
-		
+			
 	}
 	
 	@Override
@@ -216,6 +213,8 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		
 	}
 	
+	
+	
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {		
 		
@@ -239,6 +238,10 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		inputTF.setCursorVisible(true);
 		inputTF.setAcceptingInput(true);
 		
+		// Initialize chat module
+		setChat(new ChatClient(this.name, this.server));
+		client = chat.getClient();
+			
 		chat.setMessagesTF(messagesTF);
 		
 		// Animate players here
@@ -411,28 +414,28 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 				if(isAlive && !powerUp){
 					switch(direction){
 					case "UP":
-						if(id == i)
+						if(id == i-1)
 							players.set(i, movingUp[0]);
 						else
 							players.set(i, movingUp[1]);
 						
 						break;
 					case "DOWN":
-						if(id == i)
+						if(id == i-1)
 							players.set(i, movingDown[0]);
 						else
 							players.set(i, movingDown[1]);
 						
 						break;
 					case "LEFT":
-						if(id == i)
+						if(id == i-1)
 							players.set(i, movingLeft[0]);
 						else
 							players.set(i, movingLeft[1]);
 						
 						break;
 					case "RIGHT":
-						if(id == i)
+						if(id == i-1)
 							players.set(i, movingRight[0]);
 						else
 							players.set(i, movingRight[1]);

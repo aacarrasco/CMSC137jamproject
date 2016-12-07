@@ -15,6 +15,7 @@ public class NetPlayer {
 	private int port;
 	private String name;
 	private int x, y;
+	private int spawnX, spawnY;
 	private int score = 0;
 	private boolean isAlive = true;
 	private int playerNo;
@@ -27,11 +28,13 @@ public class NetPlayer {
 	 * @param address
 	 * @param port
 	 */
-	public NetPlayer(String name,InetAddress address, int port, int playerNo){
+	public NetPlayer(String name,InetAddress address, int port, int playerNo, int spawnX, int spawnY){
 		this.setAddress(address);
 		this.setPort(port);
 		this.setName(name);
 		this.setPlayerNo(playerNo);
+		this.setSpawnX(spawnX);
+		this.setSpawnY(spawnY);
 	}
 
 	/**
@@ -102,6 +105,22 @@ public class NetPlayer {
 	 */
 	public void setY(int y) {
 		this.y = y;
+	}
+	
+	public int getSpawnX(){
+		return spawnX;
+	}
+	
+	public void setSpawnX(int spawnX){
+		this.spawnX = spawnX;
+	}
+	
+	public int getSpawnY(){
+		return spawnY;
+	}
+	
+	public void setSpawnY(int spawnY){
+		this.spawnY = spawnY;
 	}
 
 	/**

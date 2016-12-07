@@ -27,7 +27,6 @@ import org.newdawn.slick.command.Command;
 import org.newdawn.slick.command.InputProvider;
 import org.newdawn.slick.command.InputProviderListener;
 import org.newdawn.slick.command.KeyControl;
-import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.gui.TextField;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -67,16 +66,15 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 	
 	private int id;
 	private ArrayList<Animation> players;
-	private ArrayList<Circle> playerBounds;
 	private ArrayList<Float> xPos;
 	private ArrayList<Float> yPos;
 	
+	private String initSpawn;
 	private ArrayList<Image> food;
 	private ArrayList<Image> powerUp;
-	private ArrayList<Circle> powerBounds;
 	private ArrayList<Float> xPower;
 	private ArrayList<Float> yPower;
-	//private ArrayList<Boolean> powerIsUp;
+	private ArrayList<Boolean> powerIsUp;
 	
 	// Animations
 	private int[] normalDuration 	= {150, 150, 150, 150};
@@ -154,11 +152,11 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 					if(serverData.startsWith("CONNECTED")){
 						connected = true;
 						System.out.println("GC: Player " + token[1] + " is connected.");
-						id = Integer.parseInt(token[5]);
-						//currXPos = Integer.parseInt(token[2]);
-						//currYPos = Integer.parseInt(token[3]);
-						switch(Integer.parseInt(token[4])){
+						id = Integer.parseInt(token[3]);
+						switch(Integer.parseInt(token[2])){
 							case 1:
+								map	= new TiledMap("assets/tmx/map5_6.tmx");
+								break;
 							case 2:
 								map	= new TiledMap("assets/tmx/map3_4.tmx");
 								break;
@@ -171,12 +169,17 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 								map	= new TiledMap("assets/tmx/map5_6.tmx");
 								break;
 						}
+
 					}
 					System.out.println("GC: CONNECT " + name + " " + connected);
 					
 				
 				} else {
 					//System.out.println("GC: ServerData: "+ serverData);
+					if(serverData.startsWith("INITSPAWN")){
+						initSpawn = serverData.substring(10);
+					}
+					
 					if(serverData.startsWith("START")){
 						numPlayers = Integer.parseInt(token[1]);
 						System.out.println("GAME STARTED with " + numPlayers + " players.");
@@ -185,7 +188,6 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 						for(int i = 0; i<numPlayers; i++){
 							xPos.add(0f);
 							yPos.add(0f);
-							playerBounds.add(new Circle(Math.round(xPos.get(i)), Math.round(yPos.get(i)), 20));
 							players.add(new Animation());	
 							players.get(i).start();
 							
@@ -197,11 +199,20 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 						//message = serverData.substring(6);
 						message = serverData;
 					}
+					
+					if(serverData.startsWith("DESPAWN")){
+						if(Integer.parseInt(token[1]) != -1)
+							powerIsUp.set(Integer.parseInt(token[1]), false);
+						token[1] = "";
+					}
 					// Spawns the food and powerups
 					if(serverData.startsWith("SPAWN")){
-						spawn = serverData.substring(5);
-						serverData = "";
-						//test = spawn;
+						for(int i = 0; i < powerIsUp.size(); i++)
+							powerIsUp.set(i, true);
+					}
+					
+					if(serverData.startsWith("END")){
+						
 					}
 				}
 			}
@@ -222,16 +233,16 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		map	= new TiledMap("assets/tmx/map5_6.tmx");
 		
 		//resize container
-		((AppGameContainer)gc).setDisplayMode((map.getWidth()*16) + 200, map.getHeight()*16, false);
+		((AppGameContainer)gc).setDisplayMode((map.getWidth()*16) + 350, map.getHeight()*16, false);
 		
 		// Setup chatbox
-		messagesTF = new TextField(gc, gc.getDefaultFont(), map.getWidth()*16, 0, 200, (map.getHeight()*16)-100);
+		messagesTF = new TextField(gc, gc.getDefaultFont(), map.getWidth()*16, 0, 350, (map.getHeight()*16)-100);
 		messagesTF.setBackgroundColor(Color.white);
 		messagesTF.setTextColor(Color.lightGray);
 		messagesTF.setBorderColor(Color.gray);
 		messagesTF.setAcceptingInput(false);
 		
-		inputTF = new TextField(gc, gc.getDefaultFont(), map.getWidth()*16, (map.getHeight()*16) - 100, 200, 100);
+		inputTF = new TextField(gc, gc.getDefaultFont(), map.getWidth()*16, (map.getHeight()*16) - 100, 350, 100);
 		inputTF.setBackgroundColor(Color.white);
 		inputTF.setBorderColor(Color.gray);
 		inputTF.setTextColor(Color.black);
@@ -313,12 +324,11 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		}
 				
 		players = new ArrayList<Animation>();
-		playerBounds = new ArrayList<Circle>();
 		xPos 	= new ArrayList<Float>();
 		yPos	= new ArrayList<Float>();
 		
 		powerUp	= new ArrayList<Image>();
-		powerBounds = new ArrayList<Circle>();
+		powerIsUp = new ArrayList<Boolean>();
 		xPower	= new ArrayList<Float>();
 		yPower	= new ArrayList<Float>();
 		
@@ -348,12 +358,11 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		
 		for(int i = 0; i<players.size(); i++){
 			players.get(i).draw(xPos.get(i), yPos.get(i), 64f, 64f);
-			
-			g.draw(playerBounds.get(i));
 		}
 		
 		for(int i = 0; i<powerUp.size(); i++){
-			powerUp.get(i).draw(xPower.get(i), yPower.get(i), 64f, 64f);
+			if(powerIsUp.get(i))
+				powerUp.get(i).draw(xPower.get(i), yPower.get(i), 64f, 64f);
 		}
 
 		
@@ -414,28 +423,28 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 				if(isAlive && !powerUp){
 					switch(direction){
 					case "UP":
-						if(id == i-1)
+						if(id == i)
 							players.set(i, movingUp[0]);
 						else
 							players.set(i, movingUp[1]);
 						
 						break;
 					case "DOWN":
-						if(id == i-1)
+						if(id == i)
 							players.set(i, movingDown[0]);
 						else
 							players.set(i, movingDown[1]);
 						
 						break;
 					case "LEFT":
-						if(id == i-1)
+						if(id == i)
 							players.set(i, movingLeft[0]);
 						else
 							players.set(i, movingLeft[1]);
 						
 						break;
 					case "RIGHT":
-						if(id == i-1)
+						if(id == i)
 							players.set(i, movingRight[0]);
 						else
 							players.set(i, movingRight[1]);
@@ -445,25 +454,38 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 				} else if(isAlive && powerUp){
 					switch(direction){
 					case "UP":
-						players.set(i, movingUpPower[playerNo]);
+						if(id == i)
+							players.set(i, movingUpPower[0]);
+						else
+							players.set(i, movingUpPower[1]);
+						
 						break;
 					case "DOWN":
-						players.set(i, movingDownPower[playerNo]);
+						if(id == i)
+							players.set(i, movingDownPower[0]);
+						else
+							players.set(i, movingDownPower[1]);
+						
 						break;
 					case "LEFT":
-						players.set(i, movingLeftPower[playerNo]);
+						if(id == i)
+							players.set(i, movingLeftPower[0]);
+						else
+							players.set(i, movingLeftPower[1]);
+						
 						break;
 					case "RIGHT":
-						players.set(i, movingRightPower[playerNo]);
+						if(id == i)
+							players.set(i, movingRightPower[0]);
+						else
+							players.set(i, movingRightPower[1]);
+						
 						break;
 					}
 				}
 				
 				xPos.set(i, x * 8);
 				yPos.set(i, y * 8);
-				
-				playerBounds.get(i).setCenterX(x * 8 + 32);
-				playerBounds.get(i).setCenterY(y * 8 + 32);
 				
 			}
 			
@@ -472,28 +494,25 @@ public class Play extends BasicGameState implements Constants, InputProviderList
 		} catch(Exception e){}
 		
 		try{
-			
-			String[] spawnsInfo = spawn.split(":");
-			for(int i = 0; i < spawnsInfo.length; i++){
-				
-				String[] spawnInfo = spawnsInfo[i].split(" ");
-				
-				if(spawnInfo[0].equals("POWERUP") && !Boolean.parseBoolean(spawnInfo[3])){
-					xPower.add(Float.parseFloat(spawnInfo[1]) * 8);
-					yPower.add(Float.parseFloat(spawnInfo[2]) * 8);
+			if(initSpawn != null){
+				String[] spawnsInfo = initSpawn.split(":");
+				for(int i = 0; i < spawnsInfo.length; i++){
 					
-					powerUp.add(new Image("assets/sprites/objects/powerUp.png"));
+					String[] spawnInfo = spawnsInfo[i].split(" ");
 					
+					if(spawnInfo[0].trim().equals("POWERUP") && !Boolean.parseBoolean(spawnInfo[3])){
+						xPower.add(Float.parseFloat(spawnInfo[1]) * 8);
+						yPower.add(Float.parseFloat(spawnInfo[2]) * 8);
+						powerIsUp.add(true);
+						powerUp.add(new Image("assets/sprites/objects/powerUp.png"));
+					}
+					if(spawnInfo[0].trim() == "FOOD"){
+						food.add(new Image("assets/sprites/objects/points.png"));
+					}			
 				}
-				if(spawnInfo[0].trim() == "FOOD"){
-					food.add(new Image("assets/sprites/objects/points.png"));
-				}
-				
-				spawn = new String("");
+				initSpawn = null;
 			}
 			
-
-			//test = ""+powerUp.size();
 		}catch(Exception e){
 			
 		}

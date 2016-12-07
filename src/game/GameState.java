@@ -56,6 +56,28 @@ public class GameState {
 		}
 	}
 	
+	public boolean powerIsAt(int x, int y){
+		for(int i = 0; i < powerUps.size(); i++){
+			if(x == powerUps.get(i).getX() && y == powerUps.get(i).getY())
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public int powerAt(int x, int y){
+		for(int i = 0; i < powerUps.size(); i++){
+			if(x == powerUps.get(i).getX() && y == powerUps.get(i).getY())
+				return i;
+		}
+		
+		return -1;
+	}
+	
+	public ArrayList<PowerUp> getPowerUps(){
+		return powerUps;
+	}
+	
 	public String spawnPointsToString(){
 		String retval = "";
 		for(int i = 0; i < powerUps.size(); i++){

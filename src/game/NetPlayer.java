@@ -171,6 +171,14 @@ public class NetPlayer {
 	public void setAlive(boolean isAlive) {
 		this.isAlive = isAlive;
 	}
+	
+	public boolean isPoweredUp(){
+		return poweredUp;
+	}
+	
+	public void setPoweredUp(boolean powerUp){
+		this.poweredUp = powerUp;
+	}
 
 	/**
 	 * @return the playerNo

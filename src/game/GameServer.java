@@ -62,39 +62,30 @@ public class GameServer extends JFrame implements Runnable, Constants{
 		
 		switch(numPlayers){
 			case 1:
-				collisions = csvreader.readCollision("src/assets/csv/map3_4_TileLayer1.csv");
-				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map3_4_power.csv"));
-				playerSpawn = csvreader.playerSpawns("src/assets/csv/map3_4_Player1.csv");
+				collisions = csvreader.readCollision("src/assets/csv/map5_6_Walls.csv");
+				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map5_6_power.csv"));
+				playerSpawn = csvreader.playerSpawns("src/assets/csv/map5_6_Player5.csv");
 				break;
 			case 2:
 			case 3:
 				collisions = csvreader.readCollision("src/assets/csv/map3_4_TileLayer1.csv");
-				//game.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map3_4_Spawn3.csv"));
+				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map3_4_power.csv"));
 				playerSpawn = csvreader.playerSpawns("src/assets/csv/map3_4_Player3.csv");
 			case 4:
 				collisions = csvreader.readCollision("src/assets/csv/map3_4_TileLayer1.csv");
-				//game.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map3_4_Spawn4.csv"));
+				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map3_4_power.csv"));
 				playerSpawn = csvreader.playerSpawns("src/assets/csv/map3_4_Player4.csv");
 				break;
 			case 5:
 				collisions = csvreader.readCollision("src/assets/csv/map5_6_TileLayer1.csv");
-				//game.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map5_6_Spawn5.csv"));
+				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map5_6_power.csv"));
+				playerSpawn = csvreader.playerSpawns("src/assets/csv/map5_6_Player5.csv");
 				break;
 			case 6:
-				collisions = csvreader.readCollision("src/assets/csv/map5_6_TileLayer1.csv");
-				//sgame.setSpawnPoints(csvreader.readSpawn("src/assets/csv/map5_6_Spawn6.csv"));
+				collisions = csvreader.readCollision("src/assets/csv/map5_6_Walls.csv");
+				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map5_6_power.csv"));
+				playerSpawn = csvreader.playerSpawns("src/assets/csv/map5_6_Player6.csv");
 				break;
-		}
-		
-		for(int i = 0; i < 30; i++){
-			for(int j = 0; j < 30; j++){
-				if(collisions[i][j]){
-					System.out.print("1");
-				}else{
-					System.out.print("0");
-				}
-			}
-			System.out.println("");
 		}
 		
 		t.start();
@@ -178,7 +169,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 									player.setDirection("RIGHT");
 									game.update(tokens[1].trim(),player);
 									
-									broadcast(serverSocket, "CONNECTED "+ player.getName() + " " + player.getX() + " " + player.getY() + " " + numPlayers + " " + player.getPlayerNo());
+									broadcast(serverSocket, "CONNECTED "+ player.getName() + " " + numPlayers + " " + player.getPlayerNo());
 											
 									playerCount++;
 									System.out.println("GS: " + playerCount + " out of " + numPlayers + " connected.");
@@ -221,6 +212,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 						System.out.println("GS: Game State: START");
 						broadcast(serverSocket, "START " + numPlayers);
 						gameStage = IN_PROGRESS;
+						broadcast(serverSocket, "INITSPAWN " + game.spawnPointsToString());
 						runUpdate();
 						runSpawner();
 					}
@@ -249,7 +241,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 					for(Iterator<String> ite=game.getPlayers().keySet().iterator();ite.hasNext();){
 						String name=(String)ite.next();
 						NetPlayer player=(NetPlayer)game.getPlayers().get(name);	
-						System.out.println(player.getY() + " : " + player.getX());
+						//System.out.println(player.getY() + " : " + player.getX());
 						switch(player.getDirection()){
 						case "UP":
 							if((player.getY() - Y_SPEED) >= 0 )
@@ -271,6 +263,14 @@ public class GameServer extends JFrame implements Runnable, Constants{
 								if(!collisions[player.getY()/4][(player.getX() + X_SPEED + 6)/4] && !collisions[(player.getY() + 6)/4][(player.getX() + X_SPEED)/4] && !collisions[(player.getY() + 3)/4][(player.getX() + X_SPEED + 3)/4])
 									player.setX(player.getX() + X_SPEED);
 							break;
+						}
+						
+						if(game.powerIsAt(player.getX(), player.getY()) ){
+							if(game.getPowerUps().get(game.powerAt(player.getX(), player.getY())).isUp()){
+								player.setPoweredUp(true);
+								game.getPowerUps().get(game.powerAt(player.getX(), player.getY())).setUp(false);;
+							}
+							broadcast(serverSocket, "DESPAWN " + game.powerAt(player.getX(), player.getY()));
 						}
 						
 						game.update(name, player);
@@ -297,9 +297,9 @@ public class GameServer extends JFrame implements Runnable, Constants{
 			public void run(){
 				while(true){
 					
-					broadcast(serverSocket, "SPAWN " + game.spawnPointsToString());
+					broadcast(serverSocket, "SPAWN");
 					try{
-						Thread.sleep(10000);
+						Thread.sleep(20000);
 					}catch(Exception e){	
 					}
 					

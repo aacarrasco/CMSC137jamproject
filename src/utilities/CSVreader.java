@@ -60,7 +60,8 @@ public class CSVreader {
 		try {
 			br = new BufferedReader(new FileReader(file));
 			
-			for(int i = 0;(line = br.readLine()) != null;i++) {
+			for(@SuppressWarnings("unused")
+			int i = 0;(line = br.readLine()) != null;i++) {
 				
 				String[] values = line.split(",");
 
@@ -94,7 +95,8 @@ public class CSVreader {
 		try {
 			br = new BufferedReader(new FileReader(file));
 			
-			for(int i = 0;(line = br.readLine()) != null;i++) {
+			for(@SuppressWarnings("unused")
+			int i = 0;(line = br.readLine()) != null;i++) {
 				
 				String[] values = line.split(",");
 

@@ -62,6 +62,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 		
 		switch(numPlayers){
 			case 1:
+				System.out.println(System.getProperty("user.dir"));
 				collisions = csvreader.readCollision("src/assets/csv/map5_6_Walls.csv");
 				game.setSpawnPoints(csvreader.powerSpawn("src/assets/csv/map5_6_power.csv"));
 				playerSpawn = csvreader.playerSpawns("src/assets/csv/map5_6_Player5.csv");
@@ -268,6 +269,7 @@ public class GameServer extends JFrame implements Runnable, Constants{
 						if(game.powerIsAt(player.getX(), player.getY()) ){
 							if(game.getPowerUps().get(game.powerAt(player.getX(), player.getY())).isUp()){
 								player.setPoweredUp(true);
+								player.setScore(player.getScore() + 1000);
 								game.getPowerUps().get(game.powerAt(player.getX(), player.getY())).setUp(false);;
 							}
 							broadcast(serverSocket, "DESPAWN " + game.powerAt(player.getX(), player.getY()));
